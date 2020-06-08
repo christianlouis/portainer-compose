@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  ${SERVICENAME}:
+    image: bkimminich/juice-shop:latest
+    networks:
+      - dmz
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.docker.network=public"
+        - "traefik.port=3000"
+        - "traefik.backend=${SERVICENAME}"
+        - "traefik.enable=true"
+        - "traefik.frontend.rule=Host:${SERVICENAME}.origins.akamaipartnertraining.com"
+        - "traefik.frontend.entryPoints=http,https"
+        
+networks:
+  dmz:
+    external: true
