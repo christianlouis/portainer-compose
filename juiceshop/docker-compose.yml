@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  ${SERVICENAME}:
+  juiceshop:
     image: bkimminich/juice-shop:latest
     networks:
       - dmz
@@ -14,11 +14,9 @@ services:
       restart_policy:
         condition: on-failure
       labels:
-        - "traefik.docker.network=public"
+        - "traefik.docker.network=dmz"
         - "traefik.port=3000"
-        - "traefik.backend=${SERVICENAME}"
         - "traefik.enable=true"
-        - "traefik.frontend.rule=Host:${SERVICENAME}.origins.akamaipartnertraining.com"
         - "traefik.frontend.entryPoints=http,https"
         
 networks:
