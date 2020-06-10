@@ -40,7 +40,7 @@ volumes:
     mysql-data:
       driver: cio
       driver_opts:
-        profile: "MYSQL"
+        profile: "BRONZE"
 networks:
   dmz:
     external: true
