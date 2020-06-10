@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - mysql_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: dAwGwdWGwxAgwdW
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress:
+     image: wordpress:latest
+     ports:
+       - 80
+     restart: always
+     links:
+      - db
+     networks:
+      - dmz
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+     labels:
+        - "traefik.docker.network=dmz"
+        - "traefik.port=3000"
+        - "traefik.enable=true"
+        - "traefik.frontend.entryPoints=http,https"
+        - "traefik.frontend.rule=Host:${PREFIX}.akaorigin.com"
+
+volumes:
+    mysql-data:
+      driver: cio
+      driver_opts:
+        profile: "MYSQL"
+networks:
+  dmz:
+    external: true
