@@ -1,0 +1,27 @@
+version: '3.2'
+services:
+    lamp:
+        image: ameseguer/opencart
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+            MYSQL_ROOT_PASSWORD: "rootpwd"
+        networks:
+        - dmz
+        deploy:
+          mode: replicated
+          replicas: 1
+          update_config:
+            parallelism: 1
+            delay: 10s
+          restart_policy:
+            condition: on-failure
+          labels:
+            - "traefik.docker.network=dmz"
+            - "traefik.port=80"
+            - "traefik.enable=true"
+            - "traefik.frontend.entryPoints=http,https"
+            - "traefik.frontend.rule=Host:${PREFIX}.akaorigin.com"
+            
+networks:
+  dmz:
+    external: true
