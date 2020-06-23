@@ -17,7 +17,7 @@ services:
         - "traefik.docker.network=dmz"
         - "traefik.port=3000"
         - "traefik.enable=true"
-        - "traefik.frontend.entryPoints=http,https"
+        - "traefik.frontend.entryPoints=http,https,http-filtered,https-filtered"
         - "traefik.frontend.rule=Host:${PREFIX}.akaorigin.com"
         
 networks:
