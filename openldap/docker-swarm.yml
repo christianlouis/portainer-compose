@@ -1,0 +1,50 @@
+version: '3.2'
+services:
+    openldap:
+        image: osixia/openldap
+        environment:
+            LDAP_ORGANISATION: "Akamai Technologies Inc."
+            LDAP_DOMAIN: "akamaipartnertraining.com"
+        networks:
+        - dmz
+        ports:
+         - 389:389
+         - 636:636
+        deploy:
+          mode: replicated
+          replicas: 1
+          update_config:
+            parallelism: 1
+            delay: 10s
+          restart_policy:
+            condition: on-failure
+          labels:
+            - "traefik.docker.network=dmz"
+            - "traefik.port=80"
+            - "traefik.enable=true"
+            - "traefik.frontend.entryPoints=http,https"
+            - "traefik.frontend.rule=Host:${PREFIX}.akaorigin.com"
+     phpldapadmin:
+        image: osixia/phpldapadmin
+        environment:
+            PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+        networks:
+        - dmz
+        deploy:
+          mode: replicated
+          replicas: 1
+          update_config:
+            parallelism: 1
+            delay: 10s
+          restart_policy:
+            condition: on-failure
+          labels:
+            - "traefik.docker.network=dmz"
+            - "traefik.port=80"
+            - "traefik.enable=true"
+            - "traefik.frontend.entryPoints=http,https"
+            - "traefik.frontend.rule=Host:ldap.admin.akamaipartnertraining.com"
+          
+networks:
+  dmz:
+    external: true
