@@ -1,0 +1,48 @@
+version: '3.2'
+services:
+    opencart:
+        image: ameseguer/opencart
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+            MYSQL_ROOT_PASSWORD: "rootpwd"
+        networks:
+        - dmz
+        deploy:
+          mode: replicated
+          replicas: 1
+          update_config:
+            parallelism: 1
+            delay: 10s
+          restart_policy:
+            condition: on-failure
+          labels:
+            - "traefik.docker.network=dmz"
+            - "traefik.port=80"
+            - "traefik.enable=true"
+            - "traefik.frontend.entryPoints=http,https"
+            - "traefik.frontend.rule=Host:user${PREFIX}.akaorigin.com,user${PREFIX}.my-akashop.com"
+
+
+    juiceshop:
+        image: bkimminich/juice-shop:latest
+        networks:
+        - dmz
+        deploy:
+          mode: replicated
+          replicas: 1
+          update_config:
+            parallelism: 1
+            delay: 10s
+          restart_policy:
+            condition: on-failure
+          labels:
+            - "traefik.docker.network=dmz"
+            - "traefik.port=3000"
+            - "traefik.enable=true"
+            - "traefik.frontend.entryPoints=http,https,http-filtered,https-filtered"
+            -  "traefik.frontend.rule=Host:user${PREFIX}exam.akaorigin.com,user${PREFIX}exam.my-akashop.com"
+
+            
+networks:
+  dmz:
+    external: true
