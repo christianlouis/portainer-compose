@@ -40,7 +40,7 @@ services:
             - "traefik.port=3000"
             - "traefik.enable=true"
             - "traefik.frontend.entryPoints=http,https,http-filtered,https-filtered"
-            -  "traefik.frontend.rule=Host:user${PREFIX}.akaorigin.com,juiceshop${PREFIX}.my-juiceshop.com"
+            -  "traefik.frontend.rule=Host:juiceshop${PREFIX}.akaorigin.com,juiceshop${PREFIX}.my-juiceshop.com"
 
             
 networks:
