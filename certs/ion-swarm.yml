@@ -6,7 +6,7 @@ services:
             MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
             MYSQL_ROOT_PASSWORD: "rootpwd"
         networks:
-        - dmz
+        - dmz2
         deploy:
           mode: replicated
           replicas: 1
@@ -26,7 +26,7 @@ services:
     juiceshop:
         image: bkimminich/juice-shop:latest
         networks:
-        - dmz
+        - dmz2
         deploy:
           mode: replicated
           replicas: 1
@@ -44,5 +44,5 @@ services:
 
             
 networks:
-  dmz:
+  dmz2:
     external: true
