@@ -1,1 +1,96 @@
-<tbd>
+version: '3.2'
+services:
+    traefik:
+        image: traefik:v1.7
+        networks:
+          - dmz
+          - dmz2
+          - portainer_portainer
+          - public
+        ports:
+          - 443:443/tcp
+          - 4433:4433/tcp
+          - 80:80/tcp
+          - 8080:8080/tcp
+          - 8088:8088/tcp
+        
+        deploy:
+          mode: replicated
+          replicas: 1
+          placement:
+            constraints:
+              - node.role == manager
+          update_config:
+            parallelism: 1
+            delay: 10s
+          restart_policy:
+            condition: on-failure
+          labels:
+            - "traefik.backend=traefik"
+            - "traefik.docker.network=public"
+            - "traefik.port=8080"
+            - "traefik.enable=true"
+            - "traefik.frontend.entryPoints=http,https"
+            - "traefik.frontend.headers.SSLRedirect=true"
+            - "traefik.frontend.rule=Host:traefik-admin.origins.akamaipartnertraining.com"
+
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - Traefik_traefik_certs:/certs
+        environment:
+          - EMAIL=${EMAIL}
+          - DOMAIN=${DOMAIN}
+          - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+          - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+        
+        command:
+          - "--api"
+          - "--acme"
+          - "--acme.storage=/certs/acme.json"
+          - "--acme.entryPoint=https"
+          - "--acme.tlsChallenge"
+          - "--acme.httpChallenge.entryPoint=http"
+          - "--acme.dnsChallenge.provider=route53"
+          - "--acme.onHostRule=true"
+          - "--acme.onDemand=false"
+          - "--acme.acmelogging=true"
+          - "--acme.email=${EMAIL:-chlouis@akamai.com}"
+          - "--acme.domains=*.akaorigin.com"
+          - "--acme.domains=*.filtered.akaorigin.com"
+          - "--acme.domains=*.my-akashop.com"
+          - "--acme.domains=*.my-juiceshop.com"
+          - "--acme.domains=*.admin.akamaipartnertraining.com"
+          - "--acme.domains=*.o.akamaipartnertraining.com"
+          - "--acme.domains=*.origins.akamaipartnertraining.com"
+          - "--acme.dnsChallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
+          - "--debug"
+          - "--docker"
+          - "--docker.swarmMode"
+          - "--docker.domain=${DOMAIN:-origins.akamaipartnertraining.com}"
+          - "--docker.watch"
+          - "--defaultentrypoints=http,https,https-filtered"
+          - "--entrypoints=Name:http Address::80 Compress:true"
+          - "--entrypoints=Name:https Address::443 TLS Compress:true TLS.MinVersion:VersionTLS12 TLS.CipherSuites:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"
+          - "--entrypoints=Name:http-filtered Address::8088 Compress:true ProxyProtocol.TrustedIPs:192.168.0.1 ProxyProtocol.Insecure:true WhiteList.SourceRange:209.170.113.98/31,209.170.113.100/31,209.170.113.106/31,209.170.113.108/32,204.2.166.173/32,204.2.166.174/31,204.2.166.176/30,204.2.166.180/32,209.8.112.100/30,209.8.112.104/31,208.49.157.49/32,208.49.157.50/31,208.49.157.52/31,208.49.157.54/32,184.84.242.21/32,184.84.242.22/31,63.151.118.0/24,67.220.142.19/32,67.220.142.20/32,67.220.142.21/32,67.220.142.22/32,66.198.8.141/32,66.198.8.142/32,66.198.8.143/32,66.198.8.144/32,209.8.112.96/30,184.84.242.32/30,23.48.168.0/22,23.50.48.0/20,67.220.142.19/32,67.220.142.20/32,67.220.142.21/32,67.220.142.22/32,66.198.8.141/32,66.198.8.142/32,66.198.8.143/32,66.198.8.144/32,23.48.168.0/22,23.50.48.0/20,2600:14a0::/40,2600:14a0::/40,188.40.15.155/32 WhiteList.UseXForwardedFor:true"
+          - "--entrypoints=Name:https-filtered Address::4433 TLS TLS:/certs/cert1.pem,/certs/privkey1.pem TLS.DefaultCertificate.Cert:/certs/cert1.pem TLS.DefaultCertificate.Key:/certs/privkey1.pem compress:true TLS.MinVersion:VersionTLS12 TLS.CipherSuites:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 ProxyProtocol.TrustedIPs:192.168.0.1 ProxyProtocol.Insecure:true WhiteList.SourceRange:209.170.113.98/31,209.170.113.100/31,209.170.113.106/31,209.170.113.108/32,204.2.166.173/32,204.2.166.174/31,204.2.166.176/30,204.2.166.180/32,209.8.112.100/30,209.8.112.104/31,208.49.157.49/32,208.49.157.50/31,208.49.157.52/31,208.49.157.54/32,184.84.242.21/32,184.84.242.22/31,63.151.118.0/24,67.220.142.19/32,67.220.142.20/32,67.220.142.21/32,67.220.142.22/32,66.198.8.141/32,66.198.8.142/32,66.198.8.143/32,66.198.8.144/32,209.8.112.96/30,184.84.242.32/30,23.48.168.0/22,23.50.48.0/20,67.220.142.19/32,67.220.142.20/32,67.220.142.21/32,67.220.142.22/32,66.198.8.141/32,66.198.8.142/32,66.198.8.143/32,66.198.8.144/32,23.48.168.0/22,23.50.48.0/20,2600:14a0::/40,2600:14a0::/40,188.40.15.155/32 WhiteList.UseXForwardedFor:true"
+          - "--logLevel=INFO"
+          - "--accessLog"
+          - "--metrics"
+          - "--metrics.prometheus"
+          - "--web"
+            
+
+networks:
+  dmz:
+    external: true
+  dmz2:
+    external: true
+  portainer_portainer:
+    external: true
+  public:
+    external: true
+
+
+volumes:
+  Traefik_traefik_certs:
+    external: true
