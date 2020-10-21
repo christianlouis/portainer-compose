@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+    <settings pass="windowsPE">
+        <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <SetupUILanguage>
+                <UILanguage>en-us</UILanguage>
+            </SetupUILanguage>
+            <InputLocale>en-us</InputLocale>
+            <SystemLocale>en-us</SystemLocale>
+            <UILanguage>en-us</UILanguage>
+            <UILanguageFallback>en-us</UILanguageFallback>
+            <UserLocale>en-us</UserLocale>
+        </component>
+        <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DiskConfiguration>
+                <WillShowUI>OnError</WillShowUI>
+                <Disk wcm:action="add">
+                    <CreatePartitions>
+                        <CreatePartition wcm:action="add">
+                            <Extend>true</Extend>
+                            <Order>1</Order>
+                            <Type>Primary</Type>
+                        </CreatePartition>
+                    </CreatePartitions>
+                    <ModifyPartitions>
+                        <ModifyPartition wcm:action="add">
+                            <Active>true</Active>
+                            <Format>NTFS</Format>
+                            <Label>SYSTEM</Label>
+                            <Letter>C</Letter>
+                            <Order>1</Order>
+                            <PartitionID>1</PartitionID>
+                        </ModifyPartition>
+                    </ModifyPartitions>
+                    <DiskID>0</DiskID>
+                    <WillWipeDisk>true</WillWipeDisk>
+                </Disk>
+            </DiskConfiguration>
+            <UserData>
+                <AcceptEula>true</AcceptEula>
+            </UserData>
+            <WindowsDeploymentServices>
+                <Login>
+                    <Credentials>
+                        <Domain>ADUSER05</Domain>
+                        <Password>PASSWORD</Password>
+                        <Username>Administrator</Username>
+                    </Credentials>
+                </Login>
+                <ImageSelection>
+                    <InstallImage>
+                        <Filename>install.wim</Filename>
+                        <ImageGroup>Windows10</ImageGroup>
+                        <ImageName>Windows 10 Pro</ImageName>
+                    </InstallImage>
+                    <InstallTo>
+                        <DiskID>0</DiskID>
+                        <PartitionID>1</PartitionID>
+                    </InstallTo>
+                </ImageSelection>
+            </WindowsDeploymentServices>
+        </component>
+    </settings>
+    <cpi:offlineImage cpi:source="wim:c:/users/administrator/documents/imagew10.wim#Windows 10 Pro" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+</unattend>
