@@ -16,7 +16,7 @@ services:
           restart_policy:
             condition: on-failure
           labels:
-            - "traefik.docker.network=dmz"
+            - "traefik.docker.network=dmz2"
             - "traefik.port=80"
             - "traefik.enable=true"
             - "traefik.frontend.entryPoints=http,https"
@@ -36,7 +36,7 @@ services:
           restart_policy:
             condition: on-failure
           labels:
-            - "traefik.docker.network=dmz"
+            - "traefik.docker.network=dmz2"
             - "traefik.port=3000"
             - "traefik.enable=true"
             - "traefik.frontend.entryPoints=http,https,http-filtered,https-filtered"
