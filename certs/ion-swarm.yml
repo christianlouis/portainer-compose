@@ -23,8 +23,8 @@ services:
             - "traefik.frontend.rule=Host:user${PREFIX}.akaorigin.com,user${PREFIX}.my-akashop.com"
 
 
-    juiceshop:
-        image: bkimminich/juice-shop:latest
+    juiceshop-exam:
+        image: bkimminich/juice-shop:v11.1.3
         networks:
         - dmz2
         deploy:
