@@ -1049,6 +1049,24 @@
 			]
 		},
 		{
+			"title": "ION Certification Stack",
+			"type": 2,
+			"categories": [
+				"Certifications"
+			],
+			"description": "Deploy ION Stack for APE",
+			"platform": "linux",
+			"repository": {
+				"url": "https://github.com/christianlouis/portainer-compose/",
+				"stackfile": "certs/ion-swarm.yml"
+			},
+			"env": [{
+					"name": "PREFIX",
+					"label": "User Prefix, e.g. 1abc"
+				}
+			]
+		},
+		{
 			"title": "Datadog agent",
 			"type": 2,
 			"categories": [
