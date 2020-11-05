@@ -20,7 +20,7 @@ services:
             - "traefik.port=80"
             - "traefik.enable=true"
             - "traefik.frontend.entryPoints=http,https"
-            - "traefik.frontend.rule=Host:user${PREFIX}exam.akaorigin.com,user${PREFIX}exam.my-juiceshop.com"
+            - "traefik.frontend.rule=Host:user${PREFIX}ksdexam.akaorigin.com,user${PREFIX}exam.my-juiceshop.com"
 
 
     juiceshop:
